@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { LuUsers } from "react-icons/lu";
-import { RiPageSeparator } from "react-icons/ri";
-import { IoIosLogOut } from "react-icons/io";
+
 import UserCard from "./UserCard";
 import Pagination from "./Pagination";
+import Stats from "./Stats";
+import LogoutButton from "./LogoutButton";
+import SearchBar from "./SearchBar";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -38,7 +39,7 @@ export default function UsersList() {
         try {
             const response = await axios.get(`${BASE_URL}/api/users?page=${pageNumber}`);
             setUsers(response.data.data);
-            setFilteredUsers(response.data.data); 
+            setFilteredUsers(response.data.data);
             setTotalPages(response.data.total_pages);
         } catch (err) {
             setError("Failed to fetch users. Please try again.");
@@ -49,8 +50,8 @@ export default function UsersList() {
 
     // Handle Logout
     const handleLogout = () => {
-        localStorage.removeItem("token"); 
-        navigate("/login"); 
+        localStorage.removeItem("token");
+        navigate("/login");
     };
 
     useEffect(() => {
@@ -70,20 +71,8 @@ export default function UsersList() {
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8 relative">
-            <button
-                onClick={handleLogout}
-                className="absolute top-6 right-6 bg-red-500 text-white px-4 py-2 rounded-lg 
-                           hover:bg-red-600 transition font-semibold shadow-md hidden sm:flex"
-            >
-                Logout
-            </button>
-            <button
-                onClick={handleLogout}
-                className="absolute top-6 right-6 bg-red-500 text-white p-2 rounded-lg 
-                           hover:bg-red-600 transition font-semibold shadow-md sm:hidden"
-            >
-                <IoIosLogOut size={24} />
-            </button>
+            <LogoutButton onLogout={() => { localStorage.removeItem("token"); navigate("/login"); }} />
+
 
             <div className="container mx-auto">
                 <div className="text-center mb-6">
@@ -96,25 +85,8 @@ export default function UsersList() {
                 </div>
 
                 <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between mb-6">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search users by name or email..."
-                        className="w-full max-w-lg px-4 py-2 md:px-4  border border-gray-300 rounded-lg shadow-sm text-blue-600
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                    />
-                    {/* Stats */}
-                    <div className="flex justify-center space-x-4 mb-6">
-                        <div className="bg-blue-50 text-blue-600 px-4 py-2 rounded-full inline-flex items-center">
-                            <span className="mr-2"><LuUsers /></span>
-                            Total Users: {filteredUsers.length}
-                        </div>
-                        <div className="bg-green-50 text-green-600 px-4 py-2 rounded-full inline-flex items-center">
-                            <span className="mr-2"><RiPageSeparator /></span>
-                            Pages: {page} / {totalPages}
-                        </div>
-                    </div>
+                    <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <Stats totalUsers={filteredUsers.length} page={page} totalPages={totalPages} />
                 </div>
 
 
