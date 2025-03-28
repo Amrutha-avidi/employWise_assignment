@@ -20,7 +20,6 @@ export default function UsersList() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    // Check if token exists, otherwise redirect to login
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -39,7 +38,7 @@ export default function UsersList() {
         try {
             const response = await axios.get(`${BASE_URL}/api/users?page=${pageNumber}`);
             setUsers(response.data.data);
-            setFilteredUsers(response.data.data); // Initialize filtered users
+            setFilteredUsers(response.data.data); 
             setTotalPages(response.data.total_pages);
         } catch (err) {
             setError("Failed to fetch users. Please try again.");
@@ -50,11 +49,10 @@ export default function UsersList() {
 
     // Handle Logout
     const handleLogout = () => {
-        localStorage.removeItem("token"); // Remove token
-        navigate("/login"); // Redirect to login
+        localStorage.removeItem("token"); 
+        navigate("/login"); 
     };
 
-    // Handle Search Filtering
     useEffect(() => {
         if (!searchQuery) {
             setFilteredUsers(users);
@@ -72,7 +70,6 @@ export default function UsersList() {
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8 relative">
-            {/* Logout Button */}
             <button
                 onClick={handleLogout}
                 className="absolute top-6 right-6 bg-red-500 text-white px-4 py-2 rounded-lg 
@@ -89,7 +86,6 @@ export default function UsersList() {
             </button>
 
             <div className="container mx-auto">
-                {/* Page Title */}
                 <div className="text-center mb-6">
                     <h2 className="text-2xl md:text-4xl font-bold  mb-4 text-blue-800 underline font-serif">
                         User Management
@@ -99,7 +95,6 @@ export default function UsersList() {
                     </p>
                 </div>
 
-                {/* Search Input */}
                 <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between mb-6">
                     <input
                         type="text"
@@ -148,7 +143,6 @@ export default function UsersList() {
                     </div>
                 )}
 
-                {/* Pagination */}
                 <Pagination page={page} totalPages={totalPages} setPage={setPage} />
             </div>
         </div>
