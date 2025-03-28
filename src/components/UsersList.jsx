@@ -24,7 +24,7 @@ export default function UsersList() {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/login");
+            navigate("/");
         }
     }, [navigate]);
 

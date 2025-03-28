@@ -44,9 +44,9 @@ export default function LoginPage() {
 
             {/* Right Side - Login Form */}
             <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white  shadow-2xl rounded-lg">
-                <div className="w-full max-w-md  shadow-2xl rounded-xl p-10">
-                    <h2 className="text-3xl font-bold text-center mb-6 text-[#095eb3]">
-                        Welcome Back!
+                <div className="w-full max-w-lg  shadow-2xl rounded-xl p-10">
+                    <h2 className="text-3xl font-bold text-center mb-6 text-[#095eb3] underline">
+                    EmployWise User Dashboard
                     </h2>
                     <p className="text-center text-[#7F8C8D] mb-6">
                         Use the demo credentials to log in and manage users.
