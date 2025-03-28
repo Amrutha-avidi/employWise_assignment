@@ -61,7 +61,7 @@ export default function LoginPage() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full p-3 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
+                                className="w-full p-3 border-2 text-blue-900 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
                             />
                         </div>
                         <div>
@@ -70,7 +70,7 @@ export default function LoginPage() {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full p-3 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
+                                className="w-full p-3 border-2 text-blue-900 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3498DB]"
                             />
                         </div>
                         
