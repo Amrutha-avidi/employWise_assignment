@@ -8,6 +8,7 @@ import Pagination from "./Pagination";
 import Stats from "./Stats";
 import LogoutButton from "./LogoutButton";
 import SearchBar from "./SearchBar";
+import EditUserModal from "./EditUserModal";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -19,6 +20,7 @@ export default function UsersList() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [editingUser, setEditingUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -48,10 +50,34 @@ export default function UsersList() {
         }
     };
 
-    // Handle Logout
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
+    const handleEditUser = (user) => {
+        setEditingUser(user);
+    };
+
+    const handleUpdateUser = (updatedUser) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+        );
+        setFilteredUsers((prevFilteredUsers) =>
+            prevFilteredUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+        );
+        setEditingUser(null);
+        alert("User updated successfully!");
+
+    };
+
+    const handleDeleteUser = async (userId) => {
+        try {
+            await axios.delete(`${BASE_URL}/api/users/${userId}`);
+            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+            setFilteredUsers((prevFilteredUsers) =>
+                prevFilteredUsers.filter((user) => user.id !== userId)
+            );
+            alert("User deleted successfully!");
+
+        } catch (err) {
+            setError("Failed to delete user. Please try again.");
+        }
     };
 
     useEffect(() => {
@@ -71,12 +97,11 @@ export default function UsersList() {
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8 relative">
-            <LogoutButton onLogout={() => { localStorage.removeItem("token"); navigate("/login"); }} />
-
+            <LogoutButton onLogout={() => { localStorage.removeItem("token"); navigate("/"); }} />
 
             <div className="container mx-auto">
                 <div className="text-center mb-6">
-                    <h2 className="text-2xl md:text-4xl font-bold  mb-4 text-blue-800 underline font-serif">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-4 text-blue-800 underline font-serif">
                         User Management
                     </h2>
                     <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-serif">
@@ -89,16 +114,12 @@ export default function UsersList() {
                     <Stats totalUsers={filteredUsers.length} page={page} totalPages={totalPages} />
                 </div>
 
-
-
-                {/* Error Message */}
                 {error && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-center mb-6">
                         {error}
                     </div>
                 )}
 
-                {/* Users List */}
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
                         <AiOutlineLoading3Quarters className="animate-spin text-4xl text-blue-500" />
@@ -106,7 +127,14 @@ export default function UsersList() {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => <UserCard key={user.id} user={user} />)
+                            filteredUsers.map((user) => (
+                                <UserCard
+                                    key={user.id}
+                                    user={user}
+                                    onEdit={handleEditUser}
+                                    onDelete={handleDeleteUser}
+                                />
+                            ))
                         ) : (
                             <div className="text-center text-gray-500 col-span-full text-xl">
                                 No users found.
@@ -117,6 +145,14 @@ export default function UsersList() {
 
                 <Pagination page={page} totalPages={totalPages} setPage={setPage} />
             </div>
+
+            {editingUser && (
+                <EditUserModal
+                    user={editingUser}
+                    onClose={() => setEditingUser(null)}
+                    onUpdate={handleUpdateUser}
+                />
+            )}
         </div>
     );
 }
